@@ -1,6 +1,6 @@
 #include <iostream>
-
-using namepsace std;
+#include "stack_and_queue.h"
+using namespace std;
 
 int main() {
 
