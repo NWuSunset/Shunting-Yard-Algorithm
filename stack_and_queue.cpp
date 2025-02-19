@@ -54,18 +54,28 @@ Queue::Queue() = default;
 
 //Add to first in queue (head of linked list)
 void Queue::enqueue(Node* node) {
-  //set head of linked list to passed in node, walk through and move linked list over one space.
-
   Node* curr = head;
-
-  while (curr != nullptr) {
+  
+  while (curr->next != nullptr) {
     curr = curr->next;
   }
+
+  curr->next = node;
+  last = curr->next; //last in queue
   
 }
 
 
-//Remove from last in queue (last in linked list)
+//Remove from first in queue (head in linked list)
 Node* Queue::dequeue() {
+  if (first == nullptr) {
+    cout << "Queue is empty" << endl;
+    return nullptr;
+  }
 
+  const Node* toDequeue = first;
+
+  first = first->next; 
+ 
+  return toDequeue;
 }

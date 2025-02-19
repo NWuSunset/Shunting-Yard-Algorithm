@@ -33,8 +33,8 @@ class Queue {
  public:
   Queue();
   
-  void enqueue(Node* node); //Add to 'top' of queue (head of linked list)
-  Node* dequeue(); //remove from 'bottom' of the queue (last linked list value)
+  void enqueue(Node* node); //Add to queue (end of linked list)
+  Node* dequeue(); //remove from 'first' of the queue (head of linked list)
 
 private:
   Node* first = nullptr; //first in queue (linked list head)
