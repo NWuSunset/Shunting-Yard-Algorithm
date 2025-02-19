@@ -20,11 +20,12 @@ class Stack {
 
   
   void push(Node* node); //Push to top of stack (head of linked list)
-  void pop(); //pop/remove from top of stack (head of linked list)
-  void peek(); //See what the top of the stack is
+  Node* pop(); //pop/remove from top of stack (head of linked list)
+  Node* peek(); //See what the top of the stack is
 
 private:
-  Node* top = nullptr; //top of stack (head of linked list)
+  Node* top = nullptr; //top of stack (just the end of linked list)
+  Node* head = nullptr; //head of list 
 };
 
 
@@ -32,12 +33,12 @@ class Queue {
  public:
   Queue();
   
-  void enqueue(); //Add to 'top' of queue (head of linked list)
-  void dequeue(); //remove from 'bottom' of the queue (last linked list value)
+  void enqueue(Node* node); //Add to 'top' of queue (head of linked list)
+  Node* dequeue(); //remove from 'bottom' of the queue (last linked list value)
 
 private:
-  Node* first = nullptr; //first in queue
-  Node* last = nullptr; //last in queue
+  Node* first = nullptr; //first in queue (linked list head)
+  Node* last = nullptr; //last in queue (linked list end)
 };
 
 #endif //STACK_AND_QUEUE_H
