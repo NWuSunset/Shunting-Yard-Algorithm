@@ -1,13 +1,17 @@
 #include "stack_and_queue.h"
+#include <iostream>
+
+using namespace std;
 
 //Stack things
 Stack::Stack() = default;
 
 //Push to top of stack
 void Stack::push(Node* node) {
-  const Node* curr = head;
+  Node* curr = head;
 
-  if (head == nullptr) {
+  if (head == nullptr) { //If head is null then there is nothing in the list
+    //For first item in the list top == head
     head = node;
     top = head;
     return;
@@ -29,9 +33,9 @@ Node* Stack::pop() {
     return nullptr;
   }
 
-  const Node* toPop = top;
+  Node* toPop = top;
 
-  const Node* curr = head;
+  Node* curr = head;
   
   //Go through list until curr->next is the top of the stack
   while (curr->next != top) {
@@ -54,7 +58,7 @@ Queue::Queue() = default;
 
 //Add to first in queue (head of linked list)
 void Queue::enqueue(Node* node) {
-  Node* curr = head;
+  Node* curr = first; //head of linked list (or first in queue)
   
   while (curr->next != nullptr) {
     curr = curr->next;
@@ -73,7 +77,7 @@ Node* Queue::dequeue() {
     return nullptr;
   }
 
-  const Node* toDequeue = first;
+  Node* toDequeue = first;
 
   first = first->next; 
  

@@ -4,7 +4,7 @@
 #include <cstring>
 
 struct Node {
-  char data = '\0'; //null character
+  char data = '\0'; //null character (this may be changed to a string later)
   Node* next = nullptr;
 
   Node(const char data) {
@@ -17,7 +17,7 @@ class Stack {
  public:
   Stack();
   //Stack will pop when the operator being put in has equal or less presedence than top of stack and added to the end queue.
-
+ 
   
   void push(Node* node); //Push to top of stack (head of linked list)
   Node* pop(); //pop/remove from top of stack (head of linked list)
