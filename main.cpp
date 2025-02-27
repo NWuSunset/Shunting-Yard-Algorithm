@@ -1,7 +1,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <cstring>
+#include <string>
+#include <unordered_map>
 #include "stack_and_queue.h"
 using namespace std;
 
@@ -15,6 +16,20 @@ bool isNum(string token);
 bool isOperator(string token);
 bool isLeftParen(string token);
 bool isRightParen(string token);
+opInfo getOpInfo(string op);
+
+enum Associativity {
+  LEFT,
+  RIGHT
+};
+
+//moperator precedence
+//^ = 4 RIGHT, * = 3 LEFT, / = 3 LEFt, - = 2 left, + = 2 left. 
+struct opInfo {
+  int precedence;
+  Associativity as;
+
+};
 
 int main() {
   cout << isNum("9232") << endl; //returns true (for testing)
@@ -22,6 +37,9 @@ int main() {
   cout << isLeftParen("(") << endl; //true = 1
   cout << isRightParen("(") << endl; //returns false
 
+  //str1.compare(str2) returns 0 if true
+
+  
   Queue* outQ = new Queue(); //output queue for shunting yard
   Stack* stack = new Stack(); // stack for the shunting yard
   
@@ -53,17 +71,20 @@ int main() {
 void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
   //while tokens to be read
   for (auto & token: tokens) {
-    //check if num, operator or paren
-
     //put into output queue
     if (isNum(token)) {
-      
+      outQ->enqueue(new Node(token));
     } else if (token.length() > 1) {
       //Anything besides numbers should only be one character long
-      cout << "Error: Non number string contains length greater than two. Did you remember to put spaces between everything?" << endl;
+      cout << "Error: Non number string contains length greater than two.\
+               Did you remember to put spaces between everything?" << endl;
       return;
     } else if (isOperator(token)) {
-      
+      //Compare to top of stack. If there is an operator will more (or equal)
+      //presedence than the one being put in, pop top of stack
+      while ((!isLeftParen(token) && getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence) || ( getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence) && getOpInfo(token).as == Associativity::LEFT) {
+
+      }
       
     } else if (isLeftParen(token)) {
       
@@ -121,4 +142,21 @@ bool isRightParen(string token) {
     }
   }
   return false;
+}
+
+opInfo getOpInfo(string op) { //returns the precedence of an operator
+  const unordered_map<string, opInfo> opMap {
+    {"^", {4, Associativity::RIGHT}},
+    {"*", {3, Associativity::LEFT}},
+    {"/", {3, Associativity::LEFT}},
+    {"-", {2, Associativity::LEFT}},
+    {"+", {2, Associativity::LEFT}},
+  };
+  
+  //.find() returns end iterator if value not found
+  if (opMap.find(op) != opMap.end()) {
+    return opMap[op]; //return the operator info struct for the specified operator
+  } else {
+    return {0, Associativity::LEFT}
+  }
 }

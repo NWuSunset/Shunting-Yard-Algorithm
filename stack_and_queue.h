@@ -1,13 +1,15 @@
 #ifndef STACK_AND_QUEUE_H
 #define STACK_AND_QUEUE_H
 
-#include <cstring>
+#include <iostream>
+#include <string>
 
 struct Node {
-  char data = '\0'; //null character (this may be changed to a string later)
+  //char data = '\0'; //null character (this may be changed to a string later)
+  std::string data = "";
   Node* next = nullptr;
 
-  Node(const char data) {
+  Node(const std::string data) {
     this->data = data;
   }
 };
