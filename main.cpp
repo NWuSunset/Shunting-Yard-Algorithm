@@ -11,6 +11,19 @@ using namespace std;
 //Outputs: infix, prefix, or postfix notation using an expression tree (that was created from the postfix notation)
 //Note: Must output expression tree for infix, postfix, and prefix
 
+enum Associativity {
+  LEFT,
+  RIGHT
+};
+
+//moperator precedence
+//^ = 4 RIGHT, * = 3 LEFT, / = 3 LEFt, - = 2 left, + = 2 left.
+struct opInfo {
+  int precedence;
+  Associativity as;
+};
+
+
 void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack);
 bool isNum(string token);
 bool isOperator(string token);
@@ -18,18 +31,6 @@ bool isLeftParen(string token);
 bool isRightParen(string token);
 opInfo getOpInfo(string op);
 
-enum Associativity {
-  LEFT,
-  RIGHT
-};
-
-//moperator precedence
-//^ = 4 RIGHT, * = 3 LEFT, / = 3 LEFt, - = 2 left, + = 2 left. 
-struct opInfo {
-  int precedence;
-  Associativity as;
-
-};
 
 int main() {
   cout << isNum("9232") << endl; //returns true (for testing)
@@ -38,7 +39,7 @@ int main() {
   cout << isRightParen("(") << endl; //returns false
 
   //str1.compare(str2) returns 0 if true
-
+  cout << getOpInfo("*").precedence << endl;
   
   Queue* outQ = new Queue(); //output queue for shunting yard
   Stack* stack = new Stack(); // stack for the shunting yard
@@ -82,8 +83,12 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
     } else if (isOperator(token)) {
       //Compare to top of stack. If there is an operator will more (or equal)
       //presedence than the one being put in, pop top of stack
-      while ((!isLeftParen(token) && getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence) || ( getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence) && getOpInfo(token).as == Associativity::LEFT) {
+      while ((!isLeftParen(token) &&
+	      getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence) ||
 
+	     (getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence) &&
+	     getOpInfo(token).as == Associativity::LEFT) {
+	
       }
       
     } else if (isLeftParen(token)) {
@@ -154,9 +159,11 @@ opInfo getOpInfo(string op) { //returns the precedence of an operator
   };
   
   //.find() returns end iterator if value not found
-  if (opMap.find(op) != opMap.end()) {
-    return opMap[op]; //return the operator info struct for the specified operator
+  auto it = opMap.find(op);
+  if (it != opMap.end()) {
+    //return the operator info struct for the specified operator
+    return it->second;
   } else {
-    return {0, Associativity::LEFT}
+    return {0, Associativity::LEFT}; //if isn't found
   }
 }
