@@ -6,7 +6,7 @@
 #include "stack_and_queue.h"
 using namespace std;
 
-//Takes: Mathamtical expression (in infix notation) that can contain +,-,*,/,^,single digit integers, and parentheses. Each token is separated by a space.
+//Takes: Mathematical expression (in infix notation) that can contain +,-,*,/,^,single digit integers, and parentheses. Each token is separated by a space.
 //Changes to postfix notation
 //Outputs: infix, prefix, or postfix notation using an expression tree (that was created from the postfix notation)
 //Note: Must output expression tree for infix, postfix, and prefix
@@ -16,7 +16,7 @@ enum Associativity {
   RIGHT
 };
 
-//moperator precedence
+//operator precedence
 //^ = 4 RIGHT, * = 3 LEFT, / = 3 LEFt, - = 2 left, + = 2 left.
 struct opInfo {
   int precedence;
@@ -25,11 +25,11 @@ struct opInfo {
 
 
 void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack);
-bool isNum(string token);
-bool isOperator(string token);
-bool isLeftParen(string token);
-bool isRightParen(string token);
-opInfo getOpInfo(string op);
+bool isNum(const string& token);
+bool isOperator(const string& token);
+bool isLeftParen(const string& token);
+bool isRightParen(const string& token);
+opInfo getOpInfo(const string& op);
 
 
 int main() {
@@ -81,16 +81,25 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
                Did you remember to put spaces between everything?" << endl;
       return;
     } else if (isOperator(token)) {
-      //Compare to top of stack. If there is an operator will more (or equal)
-      //presedence than the one being put in, pop top of stack
-      while ((!isLeftParen(token) &&
-	      getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence) ||
+      //bools for readability.
+       bool isNotLeftParen = !isLeftParen(stack->peek()->data);
+       bool hasHigherPrecedence = getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence;
+       bool hasEqualPrecedence = getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence;
+       bool isLeftAssociative = getOpInfo(token).as == Associativity::LEFT;
 
-	     (getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence) &&
-	     getOpInfo(token).as == Associativity::LEFT) {
-	
+      //Compare to top of stack (operator 2, o2). If o2 is more than or equal
+      //precedence than the one being put in (operator 1, o1), pop o2.
+      while (isNotLeftParen && (hasHigherPrecedence || (hasEqualPrecedence && isLeftAssociative))) {
+        outQ->enqueue(stack->pop()); //pop operator 2 from stack into output queue
+        if (!stack->isEmpty()) {
+          isNotLeftParen = !isLeftParen(stack->peek()->data);
+          hasHigherPrecedence = getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence;
+          hasEqualPrecedence = getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence;
+          isLeftAssociative = getOpInfo(token).as == Associativity::LEFT;
+        }
       }
-      
+      //Push operator into stack
+      stack->push(new Node(token));
     } else if (isLeftParen(token)) {
       
     } else if (isRightParen(token)) {
@@ -101,17 +110,17 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
 
 
 //Checks if string is a integer
-bool isNum(string token) {
-  for (char ch : token) {
+bool isNum(const string& token) {
+  for (const char ch : token) {
     int asciiVal = ch; //convert to ascii value
-    if (!(ch >= 48 && ch <= 57)) { //check if it's in the range of ascii digits
+    if (!(asciiVal >= 48 && asciiVal <= 57)) { //check if it's in the range of ascii digits
       return false; //returns false if we find something not in the digit range
     }
   }
   return true;
 }
 
-bool isOperator(string token) {
+bool isOperator(const string& token) {
   /* if (token.length() > 1) { //operators should only be one character long
     cout << "Error: Non number string contains length greater than two. Did you remember to put spaces between everything?" << endl;
     return false;
@@ -127,7 +136,7 @@ bool isOperator(string token) {
   return false;
 }
 
-bool isLeftParen(string token) {
+bool isLeftParen(const string& token) {
   for (char ch : token) {
     int asciiVal = ch;
   
@@ -138,7 +147,7 @@ bool isLeftParen(string token) {
   return false;
 }
 
-bool isRightParen(string token) {
+bool isRightParen(const string& token) {
   for (char ch : token) { 
     int asciiVal = ch;
     
@@ -149,7 +158,7 @@ bool isRightParen(string token) {
   return false;
 }
 
-opInfo getOpInfo(string op) { //returns the precedence of an operator
+opInfo getOpInfo(const string& op) { //returns the precedence of an operator
   const unordered_map<string, opInfo> opMap {
     {"^", {4, Associativity::RIGHT}},
     {"*", {3, Associativity::LEFT}},
@@ -159,7 +168,7 @@ opInfo getOpInfo(string op) { //returns the precedence of an operator
   };
   
   //.find() returns end iterator if value not found
-  auto it = opMap.find(op);
+  const auto it = opMap.find(op);
   if (it != opMap.end()) {
     //return the operator info struct for the specified operator
     return it->second;

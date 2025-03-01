@@ -50,8 +50,15 @@ Node* Stack::pop() {
 }
 
 //Peek top of stack
-Node* Stack::peek() {
+Node* Stack::peek() const {
   return top;
+}
+
+bool Stack::isEmpty() const {
+  if (head == nullptr) { //head will be null if there is nothing in the stack
+    return true;
+  }
+  return false;
 }
 
 Queue::Queue() = default;

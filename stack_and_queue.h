@@ -6,10 +6,10 @@
 
 struct Node {
   //char data = '\0'; //null character (this may be changed to a string later)
-  std::string data = "";
+  std::string data;
   Node* next = nullptr;
 
-  Node(const std::string data) {
+  explicit Node(const std::string& data) {
     this->data = data;
   }
 };
@@ -23,7 +23,8 @@ class Stack {
   
   void push(Node* node); //Push to top of stack (head of linked list)
   Node* pop(); //pop/remove from top of stack (head of linked list)
-  Node* peek(); //See what the top of the stack is
+  Node* peek() const; //See what the top of the stack is
+  bool isEmpty() const;
 
 private:
   Node* top = nullptr; //top of stack (just the end of linked list)
