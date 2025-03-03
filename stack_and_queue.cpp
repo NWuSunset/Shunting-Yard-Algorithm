@@ -80,17 +80,18 @@ void Queue::enqueue(Node* node) {
   //if there are no items in the queue
   if (first == nullptr) {
     first = node;
+    last = node;
     return;
   }
   
   Node* curr = first; //head of linked list (or first in queue)
   
-  while (curr->next != nullptr) {
+ /*while (curr->next != nullptr) {
     curr = curr->next;
-  }
+  }*/
 
-  curr->next = node;
-  last = curr->next; //last in queue
+  last->next = node;
+  last = node; //last in queue
   
 }
 
@@ -105,6 +106,10 @@ Node* Queue::dequeue() {
   Node* toDequeue = first;
 
   first = first->next; 
+
+  if (first == nullptr) { //if there is only one item in the queue
+    last = nullptr;
+  }
  
   return toDequeue;
 }
