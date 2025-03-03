@@ -85,7 +85,7 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
   for (auto & token: tokens) {
     //put into output queue
     if (isNum(token)) {
-      cout << "is number" << endl;
+      //cout << "is number" << endl;
       outQ->enqueue(new Node(token));
     } else if (token.length() > 1) {
       //Anything besides numbers should only be one character long
@@ -95,8 +95,7 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
       
       if (!stack->isEmpty()) {
 	//bools for readability.
-	cout << "is Operator" << endl;
-	//cout << stack->peek()->data;
+	//cout << "is Operator" << endl;
 	bool isNotLeftParen = !isLeftParen(stack->peek()->data);
 	bool hasHigherPrecedence = getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence;
 	bool hasEqualPrecedence = getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence;
@@ -104,7 +103,7 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
 	
 	//Compare to top of stack (operator 2, o2). If it's not a left parenthesis and if o2 is more than or equal
 	//precedence than the one being put in (operator 1, o1), pop o2.
-	while (isNotLeftParen && (hasHigherPrecedence || (hasEqualPrecedence && isLeftAssociative))) {
+	while (!stack->isEmpty() && (isNotLeftParen && (hasHigherPrecedence || (hasEqualPrecedence && isLeftAssociative)))) {
 	  outQ->enqueue(stack->pop()); //pop operator 2 from stack into output queue
 	  if (!stack->isEmpty()) { //once stack is empty, update the while loop conditions
 	    isNotLeftParen = !isLeftParen(stack->peek()->data);
@@ -120,12 +119,16 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
       stack->push(new Node(token));
     } else if (isRightParen(token)) {
       bool isNotLeftParen = !isLeftParen(stack->peek()->data);
-      while (isNotLeftParen) { //pop stack until we find a left paren.
-	cout << "Operator stack is not empty" << endl;
+      while (!stack->isEmpty() && isNotLeftParen) { //pop stack until we find a left paren.
+	//cout << "Operator stack is not empty" << endl;
 	//If the stack runs out without finding a left paren then there are mismatched parenthesis.
 	outQ->enqueue(stack->pop());
+
+	if (!stack->isEmpty()) {
+	  isNotLeftParen = !isLeftParen(stack->peek()->data);
+	}
       }
-      cout << "There is a left parenthesis at the top of the stack" << endl; //debug
+      //cout << "There is a left parenthesis at the top of the stack" << endl; //debug
 
       stack->pop(); //left parenthesis gets discarded once found
     }
@@ -134,7 +137,7 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
   //While there are tokens on the operator stack. (if the top is a parenthesis, then there are mismatched parenthesis)
   while (!stack->isEmpty()) {
     if (!isLeftParen(stack->peek()->data)) {
-      cout << "Operator on topp isn't a left parenthesis" << endl;
+      //cout << "Operator on topp isn't a left parenthesis" << endl;
     }
     outQ->enqueue(stack->pop());
   }

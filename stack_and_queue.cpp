@@ -118,8 +118,8 @@ void Queue::printQueue() {
   //GO through the linked list
   Node* curr = first;
 
-  while (curr->next != nullptr) {
-    cout << curr->data;
+  while (curr != nullptr) {
+    cout << curr->data << " ";
     curr = curr->next;
   }
 }
