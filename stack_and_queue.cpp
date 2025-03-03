@@ -119,6 +119,7 @@ void Queue::printQueue() {
   Node* curr = first;
 
   while (curr->next != nullptr) {
-    cout << curr->data << " ";
+    cout << curr->data;
+    curr = curr->next;
   }
 }
