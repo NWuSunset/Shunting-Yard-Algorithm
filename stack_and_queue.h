@@ -25,7 +25,6 @@ class Stack {
   Node* pop(); //pop/remove from top of stack (head of linked list)
   Node* peek() const; //See what the top of the stack is
   bool isEmpty() const;
-
 private:
   Node* top = nullptr; //top of stack (just the end of linked list)
   Node* head = nullptr; //head of list 
@@ -38,7 +37,8 @@ class Queue {
   
   void enqueue(Node* node); //Add to queue (end of linked list)
   Node* dequeue(); //remove from 'first' of the queue (head of linked list)
-
+  void printQueue();
+  
 private:
   Node* first = nullptr; //first in queue (linked list head)
   Node* last = nullptr; //last in queue (linked list end)

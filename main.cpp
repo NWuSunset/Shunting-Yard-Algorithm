@@ -41,6 +41,8 @@ int main() {
   //str1.compare(str2) returns 0 if true
   cout << getOpInfo("*").precedence << endl;
   
+
+  
   Queue* outQ = new Queue(); //output queue for shunting yard
   Stack* stack = new Stack(); // stack for the shunting yard
   
@@ -48,8 +50,13 @@ int main() {
   vector<string> tokens;
   string token;
   
+  stack->push(new Node("test"));
+  cout << stack->peek()->data << endl;
+  stack->pop();
+  cout << "Empty or no?: " << stack->isEmpty() << endl; //returns 1 if true
 
-  
+
+    
   cout << "Enter a math expression (in infix notation). Separate all characters using a space. EX: ( 3 + 2 ) * 2" << endl;
   getline(cin, input);
 
@@ -62,49 +69,74 @@ int main() {
   for (auto & elem: tokens) {
     cout << elem << endl;
   }
-  
+
+   
   shuntingYard(tokens, outQ, stack);
+
+  //Print out the output queue
+  outQ->printQueue();
   
   return 0;
 }
 
-//Does shunting stuff?
+//Does shunting stuff. Supports *,/,+,-,()
 void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
   //while tokens to be read
   for (auto & token: tokens) {
     //put into output queue
     if (isNum(token)) {
+      cout << "is number" << endl;
       outQ->enqueue(new Node(token));
     } else if (token.length() > 1) {
       //Anything besides numbers should only be one character long
-      cout << "Error: Non number string contains length greater than two.\
-               Did you remember to put spaces between everything?" << endl;
+      cout << "Error: Non number string contains length greater than two. Did you remember to put spaces between everything?" << endl;
       return;
     } else if (isOperator(token)) {
-      //bools for readability.
-       bool isNotLeftParen = !isLeftParen(stack->peek()->data);
-       bool hasHigherPrecedence = getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence;
-       bool hasEqualPrecedence = getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence;
-       bool isLeftAssociative = getOpInfo(token).as == Associativity::LEFT;
-
-      //Compare to top of stack (operator 2, o2). If o2 is more than or equal
-      //precedence than the one being put in (operator 1, o1), pop o2.
-      while (isNotLeftParen && (hasHigherPrecedence || (hasEqualPrecedence && isLeftAssociative))) {
-        outQ->enqueue(stack->pop()); //pop operator 2 from stack into output queue
-        if (!stack->isEmpty()) {
-          isNotLeftParen = !isLeftParen(stack->peek()->data);
-          hasHigherPrecedence = getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence;
-          hasEqualPrecedence = getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence;
-          isLeftAssociative = getOpInfo(token).as == Associativity::LEFT;
-        }
+      
+      if (!stack->isEmpty()) {
+	//bools for readability.
+	cout << "is Operator" << endl;
+	//cout << stack->peek()->data;
+	bool isNotLeftParen = !isLeftParen(stack->peek()->data);
+	bool hasHigherPrecedence = getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence;
+	bool hasEqualPrecedence = getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence;
+	bool isLeftAssociative = getOpInfo(token).as == Associativity::LEFT;
+	
+	//Compare to top of stack (operator 2, o2). If it's not a left parenthesis and if o2 is more than or equal
+	//precedence than the one being put in (operator 1, o1), pop o2.
+	while (isNotLeftParen && (hasHigherPrecedence || (hasEqualPrecedence && isLeftAssociative))) {
+	  outQ->enqueue(stack->pop()); //pop operator 2 from stack into output queue
+	  if (!stack->isEmpty()) { //once stack is empty, update the while loop conditions
+	    isNotLeftParen = !isLeftParen(stack->peek()->data);
+	    hasHigherPrecedence = getOpInfo(stack->peek()->data).precedence > getOpInfo(token).precedence;
+	    hasEqualPrecedence = getOpInfo(stack->peek()->data).precedence == getOpInfo(token).precedence;
+	    isLeftAssociative = getOpInfo(token).as == Associativity::LEFT;
+	  }
+	}
       }
       //Push operator into stack
       stack->push(new Node(token));
-    } else if (isLeftParen(token)) {
-      
+    } else if (isLeftParen(token)) { //push it into the operator stack (as it has the highest prescedence)
+      stack->push(new Node(token));
     } else if (isRightParen(token)) {
-      
+      bool isNotLeftParen = !isLeftParen(stack->peek()->data);
+      while (isNotLeftParen) { //pop stack until we find a left paren.
+	cout << "Operator stack is not empty" << endl;
+	//If the stack runs out without finding a left paren then there are mismatched parenthesis.
+	outQ->enqueue(stack->pop());
+      }
+      cout << "There is a left parenthesis at the top of the stack" << endl; //debug
+
+      stack->pop(); //left parenthesis gets discarded once found
     }
+  } //end of tokens to be read
+
+  //While there are tokens on the operator stack. (if the top is a parenthesis, then there are mismatched parenthesis)
+  while (!stack->isEmpty()) {
+    if (!isLeftParen(stack->peek()->data)) {
+      cout << "Operator on topp isn't a left parenthesis" << endl;
+    }
+    outQ->enqueue(stack->pop());
   }
 }
 
@@ -139,10 +171,10 @@ bool isOperator(const string& token) {
 bool isLeftParen(const string& token) {
   for (char ch : token) {
     int asciiVal = ch;
-  
-  if (asciiVal == 40) { //ascii of ( is 40
-    return true; 
-  }
+    
+    if (asciiVal == 40) { //ascii of ( is 40
+      return true; 
+    }
   }
   return false;
 }

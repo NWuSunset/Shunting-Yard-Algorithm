@@ -35,6 +35,13 @@ Node* Stack::pop() {
 
   Node* toPop = top;
 
+  //if there is only one thing in the stack
+  if (top == head) {
+    top = nullptr;
+    head = nullptr;
+    return toPop;
+  }
+  
   Node* curr = head;
   
   //Go through list until curr->next is the top of the stack
@@ -51,11 +58,16 @@ Node* Stack::pop() {
 
 //Peek top of stack
 Node* Stack::peek() const {
+  if (top == nullptr) {
+    cout << "Stack empty, top is null" << endl;
+  }
+  
   return top;
 }
 
+//Extra function to check if the top is null. For readablility
 bool Stack::isEmpty() const {
-  if (head == nullptr) { //head will be null if there is nothing in the stack
+  if (top == nullptr) { //head will be null if there is nothing in the stack
     return true;
   }
   return false;
@@ -65,6 +77,12 @@ Queue::Queue() = default;
 
 //Add to first in queue (head of linked list)
 void Queue::enqueue(Node* node) {
+  //if there are no items in the queue
+  if (first == nullptr) {
+    first = node;
+    return;
+  }
+  
   Node* curr = first; //head of linked list (or first in queue)
   
   while (curr->next != nullptr) {
@@ -89,4 +107,13 @@ Node* Queue::dequeue() {
   first = first->next; 
  
   return toDequeue;
+}
+
+void Queue::printQueue() {
+  //GO through the linked list
+  Node* curr = first;
+
+  while (curr->next != nullptr) {
+    cout << curr->data << " ";
+  }
 }
