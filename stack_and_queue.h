@@ -29,8 +29,7 @@ class Stack {
   Node* peek() const; //See what the top of the stack is
   bool isEmpty() const;
 private:
-  Node* top = nullptr; //top of stack (just the end of linked list)
-  Node* head = nullptr; //head of list 
+  Node* top = nullptr; //top of stack (just the end of linked list) 
 };
 
 

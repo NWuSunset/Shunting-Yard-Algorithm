@@ -8,22 +8,17 @@ Stack::Stack() = default;
 
 //Push to top of stack
 void Stack::push(Node* node) {
-  Node* curr = head;
-
-  if (head == nullptr) { //If head is null then there is nothing in the list
+  if (top == nullptr) { //If head is null then there is nothing in the list
     //For first item in the list top == head
-    head = node;
-    top = head;
+    //head = node;
+    //top = head;
+    top = node;
     return;
   }
   
-  while (curr->next != nullptr) {
-    curr = curr->next;
-  }
+  node->next = top;
+  top = node;
 
-  //Once we hit end of linked list (should be top of stack)
-  curr->next = node;
-  top = curr->next;
   } 
 
 //Pop from top of stack
@@ -34,25 +29,9 @@ Node* Stack::pop() {
   }
 
   Node* toPop = top;
-
-  //if there is only one thing in the stack
-  if (top == head) {
-    top = nullptr;
-    head = nullptr;
-    return toPop;
-  }
   
-  Node* curr = head;
-  
-  //Go through list until curr->next is the top of the stack
-  while (curr->next != top) {
-    curr = curr->next;
-  }
-
-  //once list end is hit (curr->next should now be the top of the stack)
-  curr->next = nullptr; 
-  top = curr; //curr is now the new top, and it's next is null
-
+  top = top->next;
+ 
   return toPop; //return the top of the stack
 }
 
@@ -83,12 +62,6 @@ void Queue::enqueue(Node* node) {
     last = node;
     return;
   }
-  
-  Node* curr = first; //head of linked list (or first in queue)
-  
- /*while (curr->next != nullptr) {
-    curr = curr->next;
-  }*/
 
   last->next = node;
   last = node; //last in queue

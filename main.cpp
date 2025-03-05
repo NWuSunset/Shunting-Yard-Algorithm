@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include "stack_and_queue.h"
-//#include "binary_tree.h"
+#include "binary_tree.h"
 #include "helper_functions.h"
 using namespace std;
 
@@ -78,7 +78,9 @@ int main() {
   //Print out the output queue
   outQ->printQueue();
 
-  //  BinaryTree* binTree = new BinaryTree(outQ);
+  //cout << "Binary Tree Test: " << endl;
+  BinaryTree* binTree = new BinaryTree(outQ);
+  binTree->printTree(binTree->stack->peek());
   
   return 0;
 }

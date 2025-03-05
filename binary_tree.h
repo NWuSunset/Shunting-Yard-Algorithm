@@ -10,8 +10,8 @@
 class BinaryTree {
 public:
   BinaryTree(Queue* queue); //takes in the postfix queue
+  void printTree(Node* pos);
 
-private:
   Stack* stack = new Stack(); //stack for the binary treew
 };
 
