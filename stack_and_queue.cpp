@@ -24,7 +24,7 @@ void Stack::push(Node* node) {
   //Once we hit end of linked list (should be top of stack)
   curr->next = node;
   top = curr->next;
-}
+  } 
 
 //Pop from top of stack
 Node* Stack::pop() {
@@ -112,6 +112,13 @@ Node* Queue::dequeue() {
   }
  
   return toDequeue;
+}
+
+bool Queue::isEmpty() const {
+  if (first == nullptr) {
+    return true;
+  }
+  return false;
 }
 
 void Queue::printQueue() {

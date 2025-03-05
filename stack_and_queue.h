@@ -9,6 +9,9 @@ struct Node {
   std::string data;
   Node* next = nullptr;
 
+  Node* left = nullptr;
+  Node* right = nullptr;
+  
   explicit Node(const std::string& data) {
     this->data = data;
   }
@@ -37,6 +40,7 @@ class Queue {
   
   void enqueue(Node* node); //Add to queue (end of linked list)
   Node* dequeue(); //remove from 'first' of the queue (head of linked list)
+  bool isEmpty() const;
   void printQueue();
   
 private:
