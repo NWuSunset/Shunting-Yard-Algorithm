@@ -2,10 +2,10 @@
 
 using namespace std;
 
-//Checks if string is a integer
+//Checks if string is an integer
 bool isNum(const string& token) {
   for (const char ch : token) {
-    int asciiVal = ch; //convert to ascii value
+    const int asciiVal = ch; //convert to ascii value
     if (!(asciiVal >= 48 && asciiVal <= 57)) { //check if it's in the range of ascii digits
       return false; //returns false if we find something not in the digit range
     }
@@ -16,7 +16,7 @@ bool isNum(const string& token) {
 bool isOperator(const string& token) {
   string operators("+-*/^");
 
-  for (char ch : operators) {
+  for (const char ch : operators) {
     if (token[0] == ch) { //since it should be a single char string only compare the 0 slot
       return true;
     }
@@ -25,8 +25,8 @@ bool isOperator(const string& token) {
 }
 
 bool isLeftParen(const string& token) {
-  for (char ch : token) {
-    int asciiVal = ch;
+  for (const char ch : token) {
+    const int asciiVal = ch;
 
     if (asciiVal == 40) { //ascii of ( is 40
       return true;
@@ -36,8 +36,8 @@ bool isLeftParen(const string& token) {
 }
 
 bool isRightParen(const string& token) {
-  for (char ch : token) {
-    int asciiVal = ch;
+  for (const char ch : token) {
+    const int asciiVal = ch;
 
     if (asciiVal == 41) { //ascii val of 41 is )
       return true;

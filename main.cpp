@@ -26,11 +26,7 @@ struct opInfo {
 };
 
 
-void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack);
-bool isNum(const string& token);
-bool isOperator(const string& token);
-bool isLeftParen(const string& token);
-bool isRightParen(const string& token);
+bool shuntingYard(const vector<string>& tokens, Queue* outQ, Stack* stack);
 opInfo getOpInfo(const string& op);
 
 
@@ -72,21 +68,28 @@ int main() {
     cout << elem << endl;
   }
 
-   
-  shuntingYard(tokens, outQ, stack);
+
+  if (shuntingYard(tokens, outQ, stack) == false) {
+    return 0;
+  }
 
   //Print out the output queue
   outQ->printQueue();
 
   //cout << "Binary Tree Test: " << endl;
   BinaryTree* binTree = new BinaryTree(outQ);
-  binTree->printTree(binTree->stack->peek());
+
+  cout << endl;
+  binTree->visualizeTree(binTree->stack->peek());
+
+  cout << "Binary tree print (infix): " << endl;
+  binTree->printExpression(binTree->stack->peek());
   
   return 0;
 }
 
 //Does shunting stuff (converts infix to postfix). Supports *,/,+,-,()
-void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
+bool shuntingYard(const vector<string>& tokens, Queue* outQ, Stack* stack) {
   //while tokens to be read
   for (auto & token: tokens) {
     //put into output queue
@@ -96,7 +99,7 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
     } else if (token.length() > 1) {
       //Anything besides numbers should only be one character long
       cout << "Error: Non number string contains length greater than two. Did you remember to put spaces between everything?" << endl;
-      return;
+      return false;
     } else if (isOperator(token)) {
       
       if (!stack->isEmpty()) {
@@ -143,10 +146,12 @@ void shuntingYard(vector<string> tokens, Queue* outQ, Stack* stack) {
   //While there are tokens on the operator stack. (if the top is a parenthesis, then there are mismatched parenthesis)
   while (!stack->isEmpty()) {
     if (!isLeftParen(stack->peek()->data)) {
-      //cout << "Operator on topp isn't a left parenthesis" << endl;
+      //cout << "Operator on top isn't a left parenthesis" << endl;
     }
     outQ->enqueue(stack->pop());
   }
+  delete stack; //delete stack when done (free up memory)
+  return true;
 }
 
 opInfo getOpInfo(const string& op) { //returns the precedence of an operator

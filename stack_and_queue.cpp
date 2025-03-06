@@ -10,15 +10,12 @@ Stack::Stack() = default;
 void Stack::push(Node* node) {
   if (top == nullptr) { //If head is null then there is nothing in the list
     //For first item in the list top == head
-    //head = node;
-    //top = head;
     top = node;
     return;
   }
   
   node->next = top;
   top = node;
-
   } 
 
 //Pop from top of stack
@@ -51,6 +48,15 @@ bool Stack::isEmpty() const {
   }
   return false;
 }
+
+Stack::~Stack() {
+  while (top != nullptr) {
+    const Node* temp = top;
+    top = top->next;
+    delete temp;
+  }
+}
+
 
 Queue::Queue() = default;
 
@@ -94,12 +100,22 @@ bool Queue::isEmpty() const {
   return false;
 }
 
-void Queue::printQueue() {
+void Queue::printQueue() const {
   //GO through the linked list
-  Node* curr = first;
+  const Node* curr = first;
 
   while (curr != nullptr) {
     cout << curr->data << " ";
     curr = curr->next;
   }
 }
+
+Queue::~Queue() {
+  while (first != nullptr) {
+    const Node* temp = first;
+    first = first->next;
+    delete temp;
+  }
+}
+
+
