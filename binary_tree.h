@@ -9,7 +9,7 @@
 class BinaryTree {
 public:
   explicit BinaryTree(Queue* &queue); //takes in the postfix queue
-  void printExpression(const Node* pos);
+  void printExpression(const Node* pos, int type);
   void visualizeTree(const Node* pos, int depth = 0) const;
   // Destructor implementation
   ~BinaryTree();

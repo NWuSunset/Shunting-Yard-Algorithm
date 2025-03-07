@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstring>
+#include <limits>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -25,71 +27,63 @@ struct opInfo {
   Associativity as;
 };
 
-
-bool shuntingYard(const vector<string>& tokens, Queue* outQ, Stack* stack);
+bool shuntingYard(const vector<string>& tokens, Queue* outQ, Stack* &stack);
 opInfo getOpInfo(const string& op);
 
 
 int main() {
-  cout << isNum("9232") << endl; //returns true (for testing)
-  cout << isOperator("^") << endl; //returns true
-  cout << isLeftParen("(") << endl; //true = 1
-  cout << isRightParen("(") << endl; //returns false
-
-  //str1.compare(str2) returns 0 if true
-  cout << getOpInfo("*").precedence << endl;
-  
-
-  
-  Queue* outQ = new Queue(); //output queue for shunting yard
-  Stack* stack = new Stack(); // stack for the shunting yard
-  
-  string input;
-  vector<string> tokens;
-  string token;
-  
-  stack->push(new Node("test"));
-  cout << stack->peek()->data << endl;
-  stack->pop();
-  cout << "Empty or no?: " << stack->isEmpty() << endl; //returns 1 if true
-
-
+    Queue* outQ = new Queue(); //output queue for shunting yard. Deleted after a binary tree is made
+    Stack* stack = new Stack(); // stack for the shunting yard. deleted after the shunting yard happens
     
-  cout << "Enter a math expression (in infix notation). Separate all characters using a space. EX: ( 3 + 2 ) * 2" << endl;
-  getline(cin, input);
-
-  istringstream iss(input);
-  while (getline(iss, token, ' ')) {
-    tokens.push_back(token);
-  }
-
-  //test print
-  for (auto & elem: tokens) {
-    cout << elem << endl;
-  }
-
-
-  if (shuntingYard(tokens, outQ, stack) == false) {
-    return 0;
-  }
-
-  //Print out the output queue
-  outQ->printQueue();
-
-  //cout << "Binary Tree Test: " << endl;
-  BinaryTree* binTree = new BinaryTree(outQ);
-
-  cout << endl;
-  binTree->visualizeTree(binTree->stack->peek());
-
-  cout << "Binary tree print (infix): " << endl;
-  binTree->printExpression(binTree->stack->peek());
-  
+    string input;
+    vector<string> tokens;
+    string token;
+    
+    
+    cout << "Enter a math expression (in infix notation). Separate all characters using a space. EX: ( 3 + 2 ) * 2" << endl;
+    getline(cin, input);
+    
+    istringstream iss(input);
+    while (getline(iss, token, ' ')) {
+      tokens.push_back(token);
+    }
+    
+    if (shuntingYard(tokens, outQ, stack) == false) {
+      return 0;
+    }
+    
+    BinaryTree* binTree = new BinaryTree(outQ); 
+    
+    char cinput[20];
+    std::cout << "Do you want to print in PREFIX, POSTFIX, or INFIX? (You can also type 'vis' to visualize the binary tree" << std::endl;
+    std::cin.getline(cinput, 20);
+    
+    
+    //in case more than 8 characters are entered (so it won't break the program)
+    if (std::cin.fail()) {
+      std::cin.clear();
+      std::cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+      std::cout << "Input Error. Input is too long" << std::endl;
+    }
+    
+    if (strcasecmp(cinput, "PREFIX") == 0){
+      binTree->printExpression(binTree->stack->peek(), 1);
+    } else if (strcasecmp(cinput, "POSTFIX") == 0) {
+      binTree->printExpression(binTree->stack->peek(), 2);
+    } else if (strcasecmp(cinput, "INFIX") == 0) {
+      binTree->printExpression(binTree->stack->peek(), 3);
+    } else if (strcasecmp(cinput, "vis") == 0) {
+      binTree->visualizeTree(binTree->stack->peek());
+    } else {
+      cout << "Incorrect input" << endl;
+    }
   return 0;
 }
 
+
+
 //Does shunting stuff (converts infix to postfix). Supports *,/,+,-,()
-bool shuntingYard(const vector<string>& tokens, Queue* outQ, Stack* stack) {
+bool shuntingYard(const vector<string>& tokens, Queue* outQ, Stack* &stack) {
   //while tokens to be read
   for (auto & token: tokens) {
     //put into output queue
